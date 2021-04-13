@@ -1,5 +1,5 @@
 CREATE TABLE roleUser (
-    idRole int NOT NULL AUTO_INCREMENT,
+    idRole VARCHAR (50) NOT NULL,
     roleUser VARCHAR(5) NOT NULL,
     descripRole VARCHAR(50) NOT NULL,
 
@@ -13,7 +13,7 @@ CREATE TABLE userE (
     mailUser VARCHAR(255) NOT NULL,
     passwordUser VARCHAR(255) NOT NULL,
 
-    idRole int  NULL,
+    idRole VARCHAR (50) NULL,
 
     PRIMARY KEY (idUser),
     CONSTRAINT FK_roleUSer FOREIGN KEY (idRole) REFERENCES roleUser(idRole)
@@ -86,3 +86,33 @@ CREATE TABLE events (
     --  We understand that one user could have one or more events, but the user only can create on event at the time
     */
 );
+
+CREATE TABLE DeletedEvents (
+    idEvent VARCHAR(5) NOT NULL,
+    userEvento VARCHAR(50) NOT NULL,
+    mailEvento VARCHAR(255) NOT NULL,
+    device VARCHAR(50) NOT NULL,
+    eventDate DATE NOT NULL,
+
+    descripEvent VARCHAR(255) NOT NULL,
+    importanceEvent VARCHAR(255) NOT NULL,
+
+    idRoom VARCHAR(10) NOT NULL,
+    floorRoom int(5) NOT NULL,
+    label VARCHAR(50) NOT NULL,
+    idUser int NOT NULL,
+    PRIMARY KEY (idEvent)
+);
+
+/* Creation of the trigger */
+DELIMITER $$
+
+CREATE TRIGGER delete_Events
+BEFORE DELETE
+ON events FOR EACH ROW
+BEGIN
+	INSERT INTO DeletedEvents (idEvent,userEvento,mailEvento,device,eventDate,descripEvent,importanceEvent,idRoom,floorRoom,label,idUser)
+    VALUES (old.idEvent,old.userEvento,old.mailEvento,old.device,old.eventDate,old.descripEvent,old.importanceEvent,old.idRoom,old.floorRoom,old.label,old.idUser);
+END$$    
+
+DELIMITER ;

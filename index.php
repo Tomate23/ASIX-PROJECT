@@ -43,6 +43,7 @@
                 session_start();
                 if($_SESSION['logged']==true){
                     $currentUser = $_SESSION["username"];
+                    $role = $_SESSION['idRole'];
                     echo '<a class="navbar-brand" href="Includes-PHP/exit.php">'.$currentUser.'</a>';
                     
                 }
@@ -64,7 +65,7 @@
                         </a>
                     </li>
                     <?php
-                    if($_SESSION['logged']==true){
+                    if($_SESSION['logged'] && $role=="adm"){
                         echo '
                         <li class="nav-item">
                             <a class="nav-link" href="Alerts/sudoku.php">Game</a>
@@ -73,10 +74,24 @@
                             <a class="nav-link" href="Includes-PHP/exit.php">Logout</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="Redirec/Signup.php"></a>
+                            <a class="nav-link" href="Redirec/AdminPage.php">Admin</a>
                         </li>
                         ';
-                    }else{
+                    }
+                    elseif($_SESSION['logged'] && $role!="adm"){
+                        echo '
+                        <li class="nav-item">
+                            <a class="nav-link" href="Alerts/sudoku.php">Game</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="Includes-PHP/exit.php">Logout</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="Redirec/Usersevents.php">My Events</a>
+                        </li>
+                        ';
+                    }
+                    else{
                         echo '
                         <li class="nav-item">
                             <a class="nav-link" href="Redirec/Login.php">Login</a>
@@ -93,9 +108,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="Redirec/Signup.php">SignUp</a>
                     </li> -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">My Events</a>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -121,7 +133,74 @@
                 </div>
                 <div class="col-md-12">
                     <div class="featured-carousel owl-carousel">
+
+			<?php
+
+			include_once './Includes-PHP/connection.php';
+			// Printing the event's information from the database
+			$sql = "select * from events";
+			$result = mysqli_query($conndb,$sql);
+            $resultCheck = mysqli_num_rows($result);
+            
+            /* $images = array("'img/cableado.jpg'","'img/teclado.jpg'","'/img/hardware.jpg'","'img/image_6.jpg'");
+            foreach ($images as $ranimage){
+                
+            } */
+            $images = array("'img/cableado.jpg'","'img/teclado.jpg'","'/img/hardware.jpg'","'img/image_6.jpg'");
+
+            
+
+            $ranimage = $images[array_rand($images)];
+
+			if ($resultCheck > 0){
+				while ($row = mysqli_fetch_array($result)){
+
+                    //$image = "background-image: url('/img/hardware.jpg');";
+
+
+                    $label = $row['label'];
+                    $importance = $row['importanceEvent'];
+                    $user = $row['userEvento'];
+                    $descripE = $row['descripEvent'];
+
+                    $fulldate = $row['eventDate'];
+                    $splitDate = explode("-", $fulldate);
+
+                    $year = $splitDate[0];
+                    $month = $splitDate[1];
+                    $day = $splitDate[2];
+                    
+
+                    foreach(range(0, $arrayLenght) as $index){}
+                    echo '
                         <div class="item">
+                            <div class="blog-entry">
+                                <a href="#" class="block-20 d-flex align-items-start" style="background-image: url('.$ranimage.');">
+                                    <div class="meta-date text-center p-2">
+                                        <span class="day">'.$day.'</span>
+                                        <span class="mos">'.$month.'</span>
+                                        <span class="yr">'.$year.'</span>
+                                    </div>
+                                </a>
+                                <div class="text border border-top-0 p-4">
+                                    <h3 class="heading"><a href="#">'.$label.'</a></h3>
+                                    <p>' .$descripE. '</p>
+                                    <div class="d-flex align-items-center mt-4">
+                                        <p class="mb-0"><a href="#" class="btn btn-primary">Read More <span
+                                                    class="ion-ios-arrow-round-forward"></span></a></p>
+                                        <p class="ml-auto meta2 mb-0">
+                                            <a href="#" class="mr-2">'.$user.'</a>
+                                            <a href="#" class="meta-chat"><span class="ion-ios-chatboxes"></span> 3</a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>';
+				}
+			}
+			?>
+
+                        <!-- <div class="item">
                             <div class="blog-entry">
                                 <a href="#" class="block-20 d-flex align-items-start" style="background-image: url('img/cableado.jpg');">
                                     <div class="meta-date text-center p-2">
@@ -144,9 +223,9 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
-                        <div class="item">
+                        <!-- <div class="item">
                             <div class="blog-entry">
                                 <a href="#" class="block-20 d-flex align-items-start" style="background-image: url('img/teclado.jpg');">
                                     <div class="meta-date text-center p-2">
@@ -269,7 +348,8 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
+
                     </div>
                 </div>
             </div>
@@ -351,7 +431,7 @@
         </div>
     </section>
 
-    <section class="ftco-section">
+    <!-- <section class="ftco-section">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-7 text-center mb-5">
@@ -362,7 +442,7 @@
                 <div class="col-lg-4 d-flex justify-content-center align-items-center">
                     <select multiple data-placeholder="Sección">
                         <option>Perifericos</option>
-                        <!-- <option selected>Framer X</option> -->
+                        <option selected>Framer X</option>
                         <option>Laptops</option>
                         <option>Torres</option>
                         <option>Wifi</option>
@@ -371,7 +451,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <section class="body">
         <div class="grid">
@@ -401,6 +481,7 @@
                     </div>
                 </div>
             </div>
+            
             <!-- <div class="grid__item">
                 <div class="card"><img class="card__img" src="./img/Categories/projector.jpg" alt="Canyons">
                     <div class="card__content">
@@ -441,8 +522,5 @@
     <script src="js/bootstrapDROP.min.js"></script>
     <script src="js/mainDROP.js"></script>
 
-
-
 </body>
-
 </html>

@@ -154,6 +154,27 @@ body {
     background-position: 500%;
   }
 }
+.alert {
+  padding: 20px;
+  background-color: #f44336;
+  color: white;
+}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+  
+}
+
+.closebtn:hover {
+  color: black;
+}
 
 </style>
 
@@ -200,7 +221,18 @@ body {
         if($_SESSION['logged']){
             $currentUser = $_SESSION["username"];
         }
-        $sql = "SELECT * FROM events WHERE userEvento='$currentUser';";
+
+        $getID = "SELECT idUser FROM userE WHERE nameUser='$currentUser';";
+        $resultID = mysqli_query($conndb, $getID);
+        $resultCheckID = mysqli_num_rows($resultID);
+        if($resultCheckID > 0){
+            while( $id = mysqli_fetch_array($resultID)){
+                $idUser = $id['idUser'];
+            }
+        }
+
+
+        $sql = "SELECT * FROM events WHERE idUser='$idUser';";
         $result = mysqli_query($conndb, $sql);
         $resultCheck = mysqli_num_rows($result);
 
@@ -211,13 +243,13 @@ body {
                     <div class="flip-card">
                         <div class="flip-card-inner">
                             <div class="flip-card-front">
-                                <img src="../img/advertencia.png" alt="Avatar" style="width:300px;height:300px;">
+                                <img src="https://images.unsplash.com/photo-1580706483913-b6ea7db483a0?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=637&q=80" style="width:300px;height:300px;">
                             </div>
                                 <div class="flip-card-back">
                                 <h1>'.$row['label'].'</h1> 
                                 <p>'.$row['device'].'</p> 
                                 <p>'.$row['eventDate'].'</p>
-                                <p class="texttitle2">'.$row['idRoom'].'</p>
+                                <p>'.$row['idRoom'].'</p>
                                 <p>'.$row['descripEvent'].'</p>
                                 <p>'.$row['importanceEvent'].'</p>
                             </div>
@@ -226,6 +258,14 @@ body {
                 </div>
                 ';
             }
+        }else{
+            $onclick = "this.parentElement.style.display='none';";
+            echo '
+            <div class="alert">
+            <span class="closebtn" onclick="'.$onclick.'">&times;</span> 
+            <strong>Oops!</strong> Indicates you do not have any records yet!!!.
+            </div>
+            ';
         }
     ?>
         <!-- <div class="card">

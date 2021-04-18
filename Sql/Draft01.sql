@@ -41,17 +41,23 @@ Create TABLE compCategory (
     idCategory VARCHAR(10) NOT NULL,
     nameCategory VARCHAR(20) NOT NULL,
     descripCategory VARCHAR(255) NOT NULL,
-    imgCategory text NULL,
+    imgCategory VARCHAR(250) DEFAULT 'https://i.postimg.cc/15b7GMSh/noimg.jpg',
 
     PRIMARY KEY (idCategory)
 );
+
+/* 
+insert into compCategory (idCategory, nameCategory, descripCategory, imgCategory) values ('HARDW','Hardware','hardware components','https://images.unsplash.com/photo-1561883088-039e53143d73?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+insert into compCategory (idCategory, nameCategory, descripCategory, imgCategory) values ('SOFTW','Software','software components','https://images.unsplash.com/photo-1613490900233-141c5560d75d?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80');
+insert into compCategory (idCategory, nameCategory, descripCategory, imgCategory) values ('FURNIT','Furniture','furniture components','https://images.unsplash.com/photo-1610775917800-a3ced40937ac?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=753&q=80');
+ */
+
 
 -- Create table Component
 CREATE TABLE component (
     idComponent int NOT NULL AUTO_INCREMENT,
     nameComponent VARCHAR(50) NOT NULL,
     descripComponent VARCHAR(255) NOT NULL,
-    label VARCHAR(50) NOT NULL,
 
     idCategory VARCHAR(10) NOT NULL,
 
@@ -103,6 +109,25 @@ CREATE TABLE DeletedEvents (
     idUser int NOT NULL,
     PRIMARY KEY (idEvent)
 );
+
+CREATE TABLE Supplier (
+    idSupp int NOT NULL AUTO_INCREMENT,
+    nameSupp VARCHAR(50) NOT NULL,
+    phoneSupp int(9) NOT NULL,
+    productSupp VARCHAR(255) NOT NULL,
+    mailSupp VARCHAR(255) NOT NULL,
+    addressSupp VARCHAR(100) NOT NULL,
+    billSupp VARCHAR(250) DEFAULT NULL,
+    imgSupp VARCHAR(250) DEFAULT 'https://i.postimg.cc/15b7GMSh/noimg.jpg',
+    
+    
+    PRIMARY KEY (idSupp)
+);
+
+/* 
+ALTER TABLE Supplier ALTER imgSupp SET DEFAULT 'https://i.postimg.cc/15b7GMSh/noimg.jpg';
+UPDATE `Supplier` SET `imgSupp` = '(IMG-URL)' WHERE `Supplier`.`idSupp` = (NUMBER);
+ */
 
 /* Creation of the trigger */
 DELIMITER $$
